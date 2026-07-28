@@ -25,12 +25,8 @@ function uuid() {
 }
 
 // ═══ Init Tables ═══
-db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL,
-    salt TEXT NOT NULL, role TEXT DEFAULT 'admin', display_name TEXT NOT NULL, created_at TEXT NOT NULL
-  );
-  CREATE TABLE IF NOT EXISTS customers (
+ db.exec(`
+   CREATE TABLE IF NOT EXISTS customers (
     id TEXT PRIMARY KEY, code TEXT, name TEXT NOT NULL, type TEXT DEFAULT '企业',
     contact_person TEXT, contact_phone TEXT, wechat TEXT, address TEXT,
     total_devices INTEGER DEFAULT 0, total_orders INTEGER DEFAULT 0, total_spent REAL DEFAULT 0,
@@ -88,12 +84,6 @@ try { db.exec("ALTER TABLE batch_orders ADD COLUMN repair_started_at TEXT"); } c
 try { db.exec("ALTER TABLE batch_orders ADD COLUMN qc_at TEXT"); } catch(e) {}
 try { db.exec("ALTER TABLE batch_orders ADD COLUMN shipped_at TEXT"); } catch(e) {}
 
-// Seed admin
-if (!db.prepare('SELECT id FROM users WHERE username=?').get('admin')) {
-  const salt = crypto.randomBytes(8).toString('hex');
-  db.prepare('INSERT INTO users (id,username,password_hash,salt,role,display_name,created_at) VALUES (?,?,?,?,?,?,?)')
-    .run(uuid(), 'admin', require('crypto').createHash('sha256').update('admin123' + salt).digest('hex'), salt, 'admin', '管理员', new Date().toISOString());
-}
 
 // Seed parts
 if (db.prepare('SELECT COUNT(*) as c FROM parts').get().c === 0) {
