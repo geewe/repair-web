@@ -360,11 +360,6 @@ app.get('/api/export', (req, res) => {
   res.json({ orders, customers, parts, transactions: txns, exportDate: new Date().toISOString() });
 });
 
-// SPA fallback
-app.get('/{*path}', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  🔧 外设维修工坊管理系统`);
   console.log(`  ─────────────────────`);
