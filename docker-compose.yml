@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  repair-web:
+    build: .
+    container_name: repair-workshop
+    restart: unless-stopped
+    ports:
+      - "3456:3456"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3456
